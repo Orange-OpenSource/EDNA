@@ -1,0 +1,18 @@
+open_mode: true
+
+pillar_roots:
+  base:
+    - /etc/salt/pillar
+
+file_roots:
+  base:
+    - /etc/salt/salt
+    - /etc/salt/states
+
+runner_dirs: [/etc/salt/runners]
+
+reactor:
+  - 'salt/beacon/minion/inotify//attacker':
+    - /etc/salt/reactor/attacker.sls
+  - 'salt/beacon/minion/inotify//healer':
+    - /etc/salt/reactor/healer.sls

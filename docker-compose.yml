@@ -1,0 +1,54 @@
+version: '2.1'
+
+services:
+  salt-master:
+    image: elkinaguas/salt-master:v2.3
+    hostname: salt-master
+    container_name: salt-master
+    environment:
+      - LOG_LEVEL=debug
+      - LOG_LEVEL_LOGFILE=debug
+    volumes:
+      - ./master_files/srv/:/etc/salt/
+      - ./master_files/:/root/
+    networks:
+      net-2:
+      net-3:
+
+  salt-minion:
+    image: elkinaguas/salt-minion:v2.3
+    hostname: minion
+    container_name: salt-minion
+    volumes:
+      - ./minion_files/minion:/etc/salt/minion
+      - ./minion_files/edna/:/root/
+    environment:
+      - LOG_LEVEL=debug
+      - LOG_LEVEL_LOGFILE=info
+    depends_on:
+      - salt-master
+    networks:
+      net-3:
+
+  salt-proxy0:
+    image: elkinaguas/salt-proxy:v2.3
+    hostname: proxy0
+    container_name: salt-proxy-0
+    volumes:
+      - ./proxy_files/proxy:/etc/salt/proxy
+      - ./proxy_files/edna/:/root/
+    environment:
+      - LOG_LEVEL=debug
+      - PROXYID=proxy0
+      - LOG_LEVEL_LOGFILE=info
+    depends_on:
+      - salt-master
+    networks:
+      net-a:
+      net-2:
+
+networks:
+      net-a:
+      net-2:
+      net-3:
+
